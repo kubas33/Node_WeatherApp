@@ -24,7 +24,7 @@ searchForm.addEventListener('submit', async (e) => {
     // Przetworzenie otrzymanej odpowiedzi do formatu JSON
     const data = await response.json();
     console.log('Odebrana odpowiedź:', data);
-    generateTodayWeather(data);
+    await generateTodayWeather(data);
 
     // Tutaj możesz przetwarzać otrzymane dane pogodowe
 
@@ -40,17 +40,24 @@ const generateTodayWeather = async data => {
   const todayWeatherSection = document.querySelector("#today-weather")
   const cityCont = document.createElement("div");
   const weatherDesc = document.createElement("div");
-  
+  const {icon, description, temp, tempFeelsLike, windSpeed, humidity, pressure} = weatherData;
+
   cityCont.classList.add("city-container");
   cityCont.innerHTML = `${city} / Dzisiaj`;
+  clearSection(todayWeatherSection);
   todayWeatherSection.appendChild(cityCont);
 
-  weatherDesc.classList.add("weather-descr")
-  weatherDesc.appendChild(generateIconWeather(weatherData.icon));
-  weatherDesc.appendChild(generateWeatherDescr(weatherData.description));
+  weatherDesc.classList.add("weather-desc")
+  weatherDesc.appendChild(generateIconWeather(icon));
+  weatherDesc.appendChild(generateHTMLElement(description, "p", "weather-desc"));
+  weatherDesc.appendChild(generateCurrentTemp(temp, tempFeelsLike))
+  const windSpeedPerHour = calculateMetersPerSecondToKilometersPerHour(windSpeed);
+  weatherDesc.appendChild(generateWindPressAndHumidity(windSpeedPerHour, pressure, humidity))
   todayWeatherSection.appendChild(weatherDesc);
+}
 
-
+const clearSection = section => {
+  section.innerHTML = "";
 }
 
 const generateIconWeather = (iconName) => {
@@ -61,8 +68,32 @@ const generateIconWeather = (iconName) => {
   return weatherIcon;
 }
 
-const generateWeatherDescr = desc => {
-  const weatherDesc = document.createElement("span");
-  weatherDesc.textContent = desc;
-  return weatherDesc;
+const generateHTMLElement = (desc, el, clas = "") => {
+  const element = document.createElement(el);
+  element.textContent = desc;
+  element.classList.add(clas);
+  return element;
+}
+
+const generateCurrentTemp = (temp, fellTemp) => {
+  const tempDescCont = document.createElement("div");
+  const currentTemp = document.createElement("p");
+  const currentFellTemp = document.createElement("p");
+  tempDescCont.appendChild(currentTemp);
+  tempDescCont.appendChild(currentFellTemp);
+  currentTemp.textContent = `${temp}°C`;
+  currentFellTemp.textContent = `Odczuwalna: ${fellTemp}`;
+  tempDescCont.classList.add("temp-cont");
+  return tempDescCont;
+}
+const generateWindPressAndHumidity = (wind, pressure, humidity) => {
+  const container = generateHTMLElement("", "div", "pressure-cont")
+  container.appendChild(generateHTMLElement(`${wind} km/h`, "p", "wind"));
+  container.appendChild(generateHTMLElement(`${pressure} kPa`, "p","pressure"));
+  container.appendChild(generateHTMLElement(`${humidity} %`,"p", "humidity"));
+  return container
+}
+
+const calculateMetersPerSecondToKilometersPerHour = speed => {
+  return Math.round(speed / 1000 * 3600);
 }
