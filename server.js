@@ -1,5 +1,6 @@
 const express = require('./node_modules/express');
 const bodyParser = require('./node_modules/body-parser');
+const date_fns = require('./node_modules/date-fns');
 const { processWeatherData } = require('./src/weatherData');
 
 const app = express();

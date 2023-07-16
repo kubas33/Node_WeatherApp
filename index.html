@@ -5,14 +5,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pogoda</title>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-  <form action="/submit-form" method="get" id="search-form">
-    <label for="city"></label>
-    <input type="text" name="city" id="city">
-    <button type="submit">Wyszukaj</button>
+  <div class="wrapper">
+    <form action="/submit-form" method="get" id="search-form">
+      <label for="city"></label>
+      <input type="text" name="city" id="city">
+      <button type="submit">Wyszukaj</button>
+    </form>
     <section id="today-weather"></section>
-  </form>
+  </div>
   <script src="/ui.js"></script>
 </body>
 </html>

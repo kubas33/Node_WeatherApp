@@ -1,0 +1,58 @@
+@import 'css-reset';
+
+@function toRem($value) {
+    $remValue: ($value/16) + rem;
+    @return $remValue;
+}
+
+@mixin beforeIcon($icon) {
+    content: "";
+    display: inline-block;
+    background: url(../icons/#{$icon});
+    background-size: contain;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 6px 0 0;
+}
+
+$bg-color: rgb(202, 240, 248);
+$wrapper-color: rgb(173, 232, 244);
+$text-color: rgb(0, 119, 182);
+
+body {
+    display: grid;
+    grid-auto-columns: auto;
+    place-content: center;
+    width: 100vw;
+    height: 100wh;
+    background-color: $bg-color;
+    color: $text-color;
+}
+
+.wrapper {
+    max-width: toRem(430);
+    background-color: $wrapper-color;
+    width: 95vw;
+    border-radius: 1.5em;
+    padding: 2rem 1rem;
+    display: grid;
+    place-content: center;
+    grid-auto-rows: auto;
+    gap: 1rem;
+}
+
+.pressure-cont {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.8rem;
+
+    .wind::before{
+        @include beforeIcon("wind.png");
+    }
+    .pressure:before {
+        @include beforeIcon("pressure.png");
+    }
+    .humidity::before{
+        @include beforeIcon("humidity.png");
+    }
+}
