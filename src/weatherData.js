@@ -1,6 +1,7 @@
 //weatherData.js
+const { log } = require('console');
 const date_fns = require('../node_modules/date-fns');
-
+const pl = require('../node_modules/date-fns/src/locale/pl');
 
 const API_KEY = '80f968c18871ba797f3c5ba8903d0996';
 
@@ -76,12 +77,16 @@ const processWeatherDataInGivenDay = async (city, givenDay) => {
   data = await getWeatherForecastInGivenDay(city, givenDay);
   const tempArr = data.map(day => Math.round(day.main.temp));
   const weatherIconArr = data.map(day => day.weather[0].icon);
+  const timeOfDayArr = data.map(day => (new Date(day.dt * 1000)).getUTCHours());
+  const day = new Date(data[0].dt * 1000);
 
   const result = {
     minMaxTemp: minMax(tempArr),
     mostCommonWeatherIcon: mostCommon(weatherIconArr),
-    day: date_fns.format(new Date(data[0].dt * 1000), 'dddd', {locale: 'pl-Pl'})
-    //day: new Date(data[0].dt * 1000)
+    day: date_fns.format(day, 'ddd', {locale: pl}),
+    tempArr: tempArr,
+    weatherIconArr: weatherIconArr,
+    timeOfDayArr
   };
   console.log(result);
 };
@@ -103,6 +108,8 @@ function minMax(items) {
 
 function mostCommon(items) {
   const hashMap = items.reduce((acc, cur) => {
+    console.log(`acc[cur]: ${acc[cur]}`);
+    console.log(`cur: ${cur}`);
     acc[cur] = (acc[cur] || 0) + 1;
     return acc;
   },{})
